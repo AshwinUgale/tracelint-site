@@ -379,7 +379,7 @@
       <div class="sec-head">
         <p class="eyebrow">Works on the traces you have</p>
         <h2>Bring your own telemetry.</h2>
-        <p>tracelint reads the exports from the tools you already run. One canonical schema underneath, so every rule reaches every source.</p>
+        <p>tracelint reads the exports from the tools you already run. One canonical schema underneath, so every rule reaches every source — tested against real traces from smolagents, LangGraph, and CrewAI.</p>
       </div>
       <div class="src">
         <div class="srccard">
@@ -389,10 +389,9 @@
     print(render_report(lint_trace(t, default_rules(), reg)))</pre>
         </div>
         <div class="srccard">
-          <h3>Langfuse <span class="fmt">langfuse</span></h3>
-          <p>Fetch a trace with the SDK and hand it straight to tracelint — object or raw JSON.</p>
-          <pre>trace = langfuse.api.trace.get("id")
-print(render_report(lint_langfuse_trace(trace, registry=reg)))</pre>
+          <h3>Langfuse <span class="fmt">integration · write-back</span></h3>
+          <p>Lint the traces you already collect — and write findings back as <b>Scores</b>, on the exact offending observation, right beside your evals.</p>
+          <pre>tracelint langfuse check --trace &lt;id&gt; --write-back</pre>
         </div>
         <div class="srccard">
           <h3>OpenLLMetry / Traceloop <span class="fmt">otel</span></h3>
