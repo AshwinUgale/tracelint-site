@@ -368,6 +368,9 @@
   .rulecard h3{font-family:var(--disp);font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0 0 10px}
   .rulecard p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.55;flex:1}
   .ru-ids{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--accent-ink);border-top:1px solid var(--line);padding-top:12px}
+  .rtip{position:relative;cursor:help;border-bottom:1px dotted currentColor}
+  .rtip:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);width:230px;background:var(--stage);color:var(--st-ink);font-family:var(--sans);font-weight:400;font-size:12px;line-height:1.45;text-transform:none;letter-spacing:0;padding:10px 12px;border-radius:9px;box-shadow:0 8px 26px -8px rgba(0,0,0,.5);z-index:30;white-space:normal}
+  .rtip:hover::before{content:"";position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--stage);z-index:30}
   .ruleref-row{text-align:right;margin-top:22px}
   .ruleref{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--accent-ink)}
   .ruleref:hover{text-decoration:underline}
@@ -573,37 +576,36 @@
           <p>A heuristic, shown with its evidence for you to judge. <b>Never fails CI on its own.</b></p>
         </div>
       </div>
-      <p class="failnote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg> Only <code>hard_defect</code> findings fail CI.</p>
       <div class="rulegrid">
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 6.4a3.5 3.5 0 0 0-4.7 4.7l-6 6V21h3.9l6-6a3.5 3.5 0 0 0 4.7-4.7l-2.3 2.3-1.9-.4-.4-1.9 2.3-2.3z"/></svg></span>
           <h3>Invalid tool call</h3>
           <p>Arguments that don't satisfy the tool's JSON Schema, aren't well-formed, or a call to a tool that isn't in the declared toolset.</p>
-          <div class="ru-ids">R1 · R6 · R7</div>
+          <div class="ru-ids"><span class="rtip" data-tip="Schema violation — recorded arguments don't satisfy the tool's declared JSON Schema.">R1</span> · <span class="rtip" data-tip="Malformed arguments — the emitted tool-call arguments aren't well-formed against the call contract.">R6</span> · <span class="rtip" data-tip="Unknown tool — a call to a tool absent from the declared registry, so its behavior can't be verified.">R7</span></div>
         </div>
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 15.5H3l9-15.5z"/><path d="M12 10v4"/><path d="M12 17.4v.01"/></svg></span>
           <h3>Failed operation</h3>
           <p>A tool returned a structured error — and, worse, its value got reused by a later side-effecting call instead of being handled.</p>
-          <div class="ru-ids">R2a · R2b</div>
+          <div class="ru-ids"><span class="rtip" data-tip="Tool error event — a tool returned a structured error, or a declared failure_when fired on an HTTP 200.">R2a</span> · <span class="rtip" data-tip="Error mishandled — a value from a failed call is reused as an argument to a later side-effecting call.">R2b</span></div>
         </div>
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3 2.4c-.6.2-1 .8-1 1.6"/><path d="M12 16.5v.01"/></svg></span>
           <h3>Unexplained value</h3>
           <p>An argument value that isn't derivable from anything the agent actually observed in the trace.</p>
-          <div class="ru-ids">R3</div>
+          <div class="ru-ids"><span class="rtip" data-tip="Hallucinated argument — an argument value that isn't derivable from anything the agent actually observed in the trace.">R3</span></div>
         </div>
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v4h-4"/></svg></span>
           <h3>No-progress execution</h3>
           <p>The same call repeated with no change in state, or an identical call and result with no mutation in between (retries and polls excluded).</p>
-          <div class="ru-ids">R4 · R5</div>
+          <div class="ru-ids"><span class="rtip" data-tip="Loop — the same call repeated with no change in state (legitimate retries and polls excluded).">R4</span> · <span class="rtip" data-tip="Redundant call — an identical call with an identical result and no mutation in between.">R5</span></div>
         </div>
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></span>
           <h3>Duplicate side effect</h3>
           <p>A non-idempotent side-effecting call repeated with equivalent args after the first succeeded — a double charge, refund, or email.</p>
-          <div class="ru-ids">R8</div>
+          <div class="ru-ids"><span class="rtip" data-tip="Duplicate side effect — a non-idempotent side-effecting call repeated with equivalent args after the first succeeded.">R8</span></div>
         </div>
       </div>
       <div class="ruleref-row"><a class="ruleref" href="https://github.com/AshwinUgale/tracelint#the-rules">View full rule reference →</a></div>
