@@ -212,6 +212,17 @@
   .feat svg{width:18px;height:18px;color:var(--accent-ink);flex:none}
   .feat b{color:var(--ink);font-weight:600}
 
+  /* works-with logo chips (white chip = readable in both themes) */
+  .worksrow{margin-top:28px}
+  .worksrow .wlbl{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:12px}
+  .wchips{display:flex;flex-wrap:wrap;gap:10px}
+  .wchip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line-strong);border-radius:10px;padding:7px 13px}
+  .wchip img{height:18px;width:auto;display:block}
+  .wchip span{font-size:12.5px;font-weight:600;color:#211f1b}
+  /* connect-step logo strip */
+  .steplogos{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .steplogos img{height:17px;width:auto;display:block}
+
   /* hero trace console (table + findings panel) */
   .console-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid var(--st-line);font-family:var(--mono);font-size:12.5px}
   .console-head .ctitle{color:var(--st-ink);font-weight:600}
@@ -321,8 +332,15 @@
           <span class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg><span><b>Evidence-backed</b> · every finding explainable</span></span>
           <span class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><b>Fail-closed</b> · unknown ≠ pass</span></span>
         </div>
-        <div class="trust">
-          <span class="works"><span class="lbl">Works with</span> <span>Arize Phoenix</span> · <span>Langfuse</span> · <span>LangSmith</span> · <span>OpenAI</span> · <span>OTel GenAI</span></span>
+        <div class="worksrow">
+          <span class="wlbl">Works with the traces you already collect</span>
+          <div class="wchips">
+            <span class="wchip"><img src="assets/logos/langfuse.svg" alt="Langfuse logo"><span>Langfuse</span></span>
+            <span class="wchip"><img src="assets/logos/arize.svg" alt="Arize logo"><span>Phoenix</span></span>
+            <span class="wchip"><img src="assets/logos/openai.svg" alt="OpenAI logo"><span>OpenAI</span></span>
+            <span class="wchip"><img src="assets/logos/langsmith.svg" alt="LangSmith logo"><span>LangSmith</span></span>
+            <span class="wchip"><img src="assets/logos/otel.svg" alt="OpenTelemetry logo"><span>OpenTelemetry</span></span>
+          </div>
         </div>
         <a class="seealso" href="#platform">↓ and it writes findings back into Langfuse — see it</a>
       </div>
@@ -405,7 +423,7 @@
         <p>Many agent failures aren't a matter of taste; they're decidable from what the agent actually did. tracelint decides them, the same way every time.</p>
       </div>
       <div class="steps">
-        <div class="step"><div class="n">01 · CONNECT</div><h3>Point it at your traces</h3><p>The spans you already collect — Phoenix, Langfuse, LangSmith, OpenAI, OTel GenAI — normalized into one canonical schema. No new instrumentation.</p></div>
+        <div class="step"><div class="n">01 · CONNECT</div><h3>Point it at your traces</h3><p>The spans you already collect, normalized into one canonical schema. No new instrumentation.</p><div class="steplogos"><img src="assets/logos/langfuse.svg" alt="Langfuse"><img src="assets/logos/arize.svg" alt="Arize Phoenix"><img src="assets/logos/openai.svg" alt="OpenAI"><img src="assets/logos/langsmith.svg" alt="LangSmith"><img src="assets/logos/otel.svg" alt="OpenTelemetry"></div></div>
         <div class="step"><div class="n">02 · LINT</div><h3>Replay the run, deterministically</h3><p>The checks read what the agent actually did: schema violations, ignored errors, reused failed values, loops, duplicate side effects — each with the exact steps as evidence. No model in the loop.</p></div>
         <div class="step"><div class="n">03 · ACT</div><h3>Get the verdict where you work</h3><p>A CI exit code that fails the build on a hard defect — or the findings written back into Langfuse as Scores, on the offending observation. Nothing silently passed.</p></div>
       </div>
