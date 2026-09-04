@@ -356,7 +356,6 @@
     <section class="hero">
       <div class="hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Deterministic · judge-free</p>
           <h1>Your agent said it worked. <span class="hsig">The trace says otherwise.</span></h1>
           <p class="lede">tracelint is a structural linter for tool-calling agents. It reads the trace you already collect and proves the defects a fluent final answer hides — with a CI exit code, and no model in the loop.</p>
           <div class="cta-row">
@@ -373,7 +372,7 @@
 
         <div class="hero-panel">
           <div class="report">
-            <div class="rep-head"><span class="rtitle">Trace · support-agent</span><span class="rbadge">exit 2</span><span class="rmeta">3 findings</span></div>
+            <div class="rep-head"><span class="rtitle">Trace · support-agent</span><span class="rmeta">3 findings</span></div>
             <div class="rep-body">
               <div class="rsteps">
                 <div class="rstep"><span class="ri">0</span><span class="rk">user</span><span class="rc">refund order A100</span><span></span></div>
@@ -387,7 +386,7 @@
               </div>
               <div class="rfinds">
                 <div class="rf evt"><div class="rf-h"><span class="chip evt">hard_event</span><span class="rid">R2a · step 1</span></div><p class="rf-s"><code>get_order</code> returned an error (HTTP 500), read straight off the span.</p><div class="rf-e">tool=get_order · signal=structured</div></div>
-                <div class="rf def"><div class="rf-h"><span class="chip def">hard_defect</span><span class="rid">R2b · steps 1 → 3</span></div><p class="rf-s">The errored value <b>A100</b> was reused as an argument to the side-effecting <code>refund_order</code> — no fallback.</p><div class="rf-e"><b>fails CI (exit 2)</b></div></div>
+                <div class="rf def"><div class="rf-h"><span class="chip def">hard_defect</span><span class="rid">R2b · steps 1 → 3</span></div><p class="rf-s">The errored value <b>A100</b> was reused as an argument to the side-effecting <code>refund_order</code> — no fallback.</p><div class="rf-e"><b>fails CI</b></div></div>
                 <div class="rf evt"><div class="rf-h"><span class="chip evt">hard_event</span><span class="rid">R8 · steps 3, 5</span></div><p class="rf-s"><code>refund_order</code> ran twice with identical args — the card was refunded twice.</p><div class="rf-e">tool=refund_order · reported</div></div>
               </div>
             </div>
@@ -450,7 +449,7 @@
           <div class="n">03 · ACT</div>
           <h3>Get a verdict you can act on</h3>
           <p>A CI exit code that fails the build on a hard defect, with every finding backed by its evidence — never a silent pass. Emit JSON or SARIF for code scanning, and read the coverage to see how much of the run was actually verified.</p>
-          <pre class="stepcode"><span class="pmt">$</span> tracelint check spans.json   →   exit 2</pre>
+          <pre class="stepcode"><span class="pmt">$</span> tracelint check spans.json   →   fails CI</pre>
         </div>
       </div>
       <div class="principles">
@@ -473,7 +472,7 @@
         <p>Deterministic checks across schema, error handling, provenance, control flow, and side effects. Every finding is filed under one of three tiers — and only the first one fails your build:</p>
       </div>
       <div class="tierlegend">
-        <div class="tl-item"><span class="chip def">hard_defect</span><p>Provable from the trace itself. <b>Fails CI</b> — exit 2, the build stops.</p></div>
+        <div class="tl-item"><span class="chip def">hard_defect</span><p>Provable from the trace itself. <b>Fails CI</b> — the build stops.</p></div>
         <div class="tl-item"><span class="chip evt">hard_event</span><p>A certain fact — a tool errored, a side effect repeated. <b>Reported, but doesn't fail CI.</b></p></div>
         <div class="tl-item"><span class="chip cand">candidate</span><p>A heuristic, shown with its evidence for you to judge. <b>Never fails CI on its own.</b></p></div>
       </div>
@@ -619,40 +618,6 @@ $ tracelint check spans.json \
         copy.textContent='copied'; setTimeout(function(){copy.textContent='copy'},1400);
       }).catch(function(){});
     });
-
-    // trace visualization — hover a finding to inspect it
-    var stage=document.getElementById('stage'), inspector=document.getElementById('inspector');
-    if(stage&&inspector){
-      var DEFAULT=inspector.innerHTML;
-      var DATA={
-        r2a:{tier:'evt',title:'A tool errored — and the run kept going.',
-          body:'<code>get_order</code> returned <b>HTTP 500</b>. tracelint reads the error status straight off the span, so a failed step is a fact, not a judgment call.',
-          meta:'R2a · tool_error_event · reported, not a CI gate'},
-        r2b:{tier:'def',title:'The agent refunded an order it never confirmed.',
-          body:'<code>get_order</code> failed with a 500 — but its order id <b>A100</b> was passed straight into the side-effecting <code>refund_order</code>. The refund ran on data from a call that had already errored.',
-          meta:'R2b · error_mishandled · fails CI (exit 2)'},
-        r8:{tier:'evt',title:'The card was refunded twice.',
-          body:'<code>refund_order</code> ran a second time with identical arguments after the first had already succeeded — a non-idempotent side effect, repeated.',
-          meta:'R8 · duplicate_side_effect · reported, not a CI gate'}
-      };
-      function render(d){
-        return '<div class="ins" data-tier="'+d.tier+'"><div class="ins-title">'+d.title+'</div>'
-          +'<p class="ins-body">'+d.body+'</p>'
-          +'<div class="ins-foot"><span class="chip '+d.tier+'">'+(d.tier==='def'?'hard_defect':'hard_event')+'</span>'
-          +'<span class="fm">'+d.meta+'</span><span class="hint">hover the trace to explore all 3 findings</span></div></div>';
-      }
-      var findings=stage.querySelectorAll('.finding');
-      function activate(el){var k=el.getAttribute('data-key');if(!DATA[k])return;inspector.innerHTML=render(DATA[k]);findings.forEach(function(f){f.classList.toggle('active',f===el);});stage.classList.add('inspecting');}
-      function clear(){inspector.innerHTML=DEFAULT;findings.forEach(function(f){f.classList.remove('active');});stage.classList.remove('inspecting');}
-      findings.forEach(function(el){
-        el.addEventListener('mouseenter',function(){activate(el);});
-        el.addEventListener('focus',function(){activate(el);});
-        el.addEventListener('mouseleave',clear);
-        el.addEventListener('blur',clear);
-        el.addEventListener('click',function(){activate(el);});
-      });
-      try{if(matchMedia('(prefers-reduced-motion: no-preference)').matches){requestAnimationFrame(function(){stage.classList.add('play');});}}catch(e){}
-    }
   })();
 </script>
 </body>
