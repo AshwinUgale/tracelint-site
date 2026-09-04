@@ -367,9 +367,10 @@
   .ru-ico svg{width:23px;height:23px}
   .rulecard h3{font-family:var(--disp);font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0 0 10px}
   .rulecard p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.55;flex:1}
-  .ru-ids{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--accent-ink);border-top:1px solid var(--line);padding-top:12px}
+  .ru-ids{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent-ink);border-top:1px solid var(--line);padding-top:13px}
+  .ru-ids .rtip{padding:1px 2px}
   .rtip{position:relative;cursor:help;border-bottom:1px dotted currentColor}
-  .rtip:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);width:230px;background:var(--stage);color:var(--st-ink);font-family:var(--sans);font-weight:400;font-size:12px;line-height:1.45;text-transform:none;letter-spacing:0;padding:10px 12px;border-radius:9px;box-shadow:0 8px 26px -8px rgba(0,0,0,.5);z-index:30;white-space:normal}
+  .rtip:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);width:270px;background:var(--stage);color:var(--st-ink);font-family:var(--sans);font-weight:400;font-size:14px;line-height:1.5;text-transform:none;letter-spacing:0;padding:13px 15px;border-radius:10px;box-shadow:0 10px 30px -8px rgba(0,0,0,.55);z-index:30;white-space:normal}
   .rtip:hover::before{content:"";position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--stage);z-index:30}
   .ruleref-row{text-align:right;margin-top:22px}
   .ruleref{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--accent-ink)}
@@ -576,6 +577,7 @@
           <p>A heuristic, shown with its evidence for you to judge. <b>Never fails CI on its own.</b></p>
         </div>
       </div>
+      <p class="rulesmore" style="margin-top:52px">The rules — grouped · hover a rule id for its definition</p>
       <div class="rulegrid">
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 6.4a3.5 3.5 0 0 0-4.7 4.7l-6 6V21h3.9l6-6a3.5 3.5 0 0 0 4.7-4.7l-2.3 2.3-1.9-.4-.4-1.9 2.3-2.3z"/></svg></span>
