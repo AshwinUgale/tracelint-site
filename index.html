@@ -317,7 +317,7 @@
   .rf-e b{color:var(--st-ink)}
   /* why-it-exists cards */
   .whycards{display:flex;flex-direction:column;gap:16px}
-  .whycard{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+  .whycard{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 28px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
   .whycard:hover{border-color:var(--line-strong);transform:translateY(-1px)}
   .wc-ico{width:54px;height:54px;border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;flex:none}
   .wc-ico svg{width:25px;height:25px}
@@ -446,23 +446,17 @@
       <div class="whycards">
         <div class="whycard">
           <span class="wc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 15.5H3l9-15.5z"/><path d="M12 10v4"/><path d="M12 17.4v.1"/></svg></span>
-          <div><div class="wc-k">Ignored error</div><p>A <code>deploy</code> tool returns a 500 Internal Server Error, but the agent swallows it and reports the deployment as successful.</p></div>
-          <span class="wc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
-        </div>
+          <div><div class="wc-k">Ignored error</div><p>A <code>deploy</code> tool returns a 500 Internal Server Error, but the agent swallows it and reports the deployment as successful.</p></div>        </div>
         <div class="whycard">
           <span class="wc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/><path d="M6.5 7v.01M9 7v.01"/></svg></span>
-          <div><div class="wc-k">HTTP 200 · declined</div><p>A payment API returns <code>{"status":"declined"}</code> over an HTTP 200, so the exception path never fires and the agent proceeds as if it succeeded.</p></div>
-          <span class="wc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
-        </div>
+          <div><div class="wc-k">HTTP 200 · declined</div><p>A payment API returns <code>{"status":"declined"}</code> over an HTTP 200, so the exception path never fires and the agent proceeds as if it succeeded.</p></div>        </div>
         <div class="whycard">
           <span class="wc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></span>
-          <div><div class="wc-k">Double write</div><p>A non-idempotent <code>send_email</code> is invoked twice due to a retry, but the agent's final answer still looks correct.</p></div>
-          <span class="wc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
-        </div>
+          <div><div class="wc-k">Double write</div><p>A non-idempotent <code>send_email</code> is invoked twice due to a retry, but the agent's final answer still looks correct.</p></div>        </div>
       </div>
       <div class="whycallout">
         <span class="wc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
-        <p>The tool changes — a charge, a database write, a file delete, a deploy — but the structural bug is the same, and it's decidable straight from the trace.</p>
+        <p>Different tools, one kind of bug: the failure is in what the agent <em>did</em>, not what it <em>said</em> — so it's provable straight from the trace. That's the part tracelint checks.</p>
       </div>
     </section>
   </div>
