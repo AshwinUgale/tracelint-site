@@ -206,6 +206,12 @@
   .cmd-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
   .cmd-row .cmd{box-shadow:none}
 
+  /* hero feature markers */
+  .features{display:flex;gap:14px 26px;flex-wrap:wrap;margin-top:26px}
+  .feat{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--muted)}
+  .feat svg{width:18px;height:18px;color:var(--accent-ink);flex:none}
+  .feat b{color:var(--ink);font-weight:600}
+
   /* hero trace console (table + findings panel) */
   .console-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid var(--st-line);font-family:var(--mono);font-size:12.5px}
   .console-head .ctitle{color:var(--st-ink);font-weight:600}
@@ -309,6 +315,11 @@
         <div class="cta-row">
           <span class="cmd"><span class="pmt">$</span><span id="cmd">pip install tracelint</span><button id="copy">copy</button></span>
           <a class="btn primary" href="https://github.com/AshwinUgale/tracelint">Get started</a>
+        </div>
+        <div class="features">
+          <span class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span><b>Deterministic</b> · judge-free</span></span>
+          <span class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg><span><b>Evidence-backed</b> · every finding explainable</span></span>
+          <span class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><b>Fail-closed</b> · unknown ≠ pass</span></span>
         </div>
         <div class="trust">
           <span class="works"><span class="lbl">Works with</span> <span>Arize Phoenix</span> · <span>Langfuse</span> · <span>LangSmith</span> · <span>OpenAI</span> · <span>OTel GenAI</span></span>
