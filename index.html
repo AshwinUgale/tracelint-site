@@ -750,7 +750,8 @@
           <div class="tc-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><div><b>side_effecting</b><span>Does this tool change the world?</span></div></div>
           <div class="tc-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><div><b>idempotent</b><span>Is repeated execution safe?</span></div></div>
           <div class="tc-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><div><b>failure_when</b><span>When should a result count as a failure?</span></div></div>
-          <p class="tp-note" style="margin:16px 0 0">Start without one — add only the semantics the trace cannot know.</p>
+          <div class="tp-cmd" style="margin:16px 0 8px"><span class="pmt">$</span> tracelint init spans.json -o tools.json</div>
+          <p class="tp-note" style="margin:0">Bootstrap it from a trace — <code>init</code> discovers the tools and their arg schemas; you fill only the behavior. Start without one, add only what the trace can't know.</p>
         </div>
         <div class="tc-code">
           <div class="tc-bar">tools.json</div>
@@ -790,7 +791,7 @@
   <span class="k">tracelint:</span>
     <span class="k">runs-on:</span> ubuntu-latest
     <span class="k">steps:</span>
-      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.5.0
+      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.6.0
         <span class="k">with:</span>
           <span class="k">path:</span> spans.json
           <span class="k">format:</span> openinference
