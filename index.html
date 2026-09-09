@@ -480,11 +480,11 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <h1>Your agent said it worked. <span class="hsig">The trace says otherwise.</span></h1>
-          <p class="lede">tracelint is a structural linter for tool-calling agents. It reads the trace you already collect and proves the defects a fluent final answer hides — with a CI exit code, and no model in the loop.</p>
+          <p class="lede">tracelint is a structural linter for tool-calling agents. Capture a run in your tests, lint the trace, and fail the build on the defects a fluent final answer hides — deterministically, with no model in the loop.</p>
           <div class="cta-row">
             <span class="cmd"><span class="pmt">$</span><span id="cmd">pip install tracelint</span><button id="copy">copy</button></span>
             <a class="btn primary" href="https://github.com/AshwinUgale/tracelint">Get started →</a>
-            <a class="btn ghost" href="#start">See it in your traces</a>
+            <a class="btn ghost" href="#start">See the quick start</a>
           </div>
           <div class="features">
             <span class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span><b>Deterministic</b> · judge-free</span></span>
@@ -568,9 +568,9 @@
         <div class="step">
           <span class="step-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6M7 8h10v3a5 5 0 0 1-10 0V8zM12 16v6"/></svg></span>
           <div class="n">01 · CONNECT</div>
-          <h3>Point it at your traces</h3>
-          <p>The spans you already collect — Phoenix, Langfuse, LangSmith, OpenAI, OTel — get normalized into one canonical schema. No new instrumentation, no rewriting your agent, no SDK to embed. If you can export the trace, tracelint can read it.</p>
-          <pre class="stepcode">load_source("spans.json", "openinference")</pre>
+          <h3>Capture a run, or read yours</h3>
+          <p>Capture a run in a test, or read the spans you already collect — Phoenix, Langfuse, LangSmith, OpenAI, OTel. Everything normalizes into one canonical schema: no rewriting your agent, no SDK to embed. If you can export the trace, tracelint can read it.</p>
+          <pre class="stepcode">with capture("trace.json", framework="smolagents"): ...</pre>
         </div>
         <div class="step">
           <span class="step-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M18 18h2"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg></span>
@@ -680,14 +680,35 @@
   <div class="wrap">
     <section id="start">
       <div class="sec-head">
-        <p class="eyebrow">Works with your telemetry · get started</p>
-        <h2>Running in a few lines.</h2>
-        <p>Install once, then point tracelint at the traces your stack already emits — one canonical schema underneath, so every rule reaches every source. Most rules run keyless; add a <code>tools.json</code> to declare the tool contract (<code>side_effecting</code>, <code>failure_when</code>, <code>x-value-origin</code>) and light up the schema- and side-effect checks. Validated on real traces from smolagents, LangGraph, and CrewAI.</p>
+        <p class="eyebrow">Get started</p>
+        <h2>Capture → lint → CI.</h2>
+        <p>The core loop is three steps: capture a run in your tests, lint the trace, and fail the build on provable defects. Most rules run keyless; add a <code>tools.json</code> to declare the tool contract (<code>side_effecting</code>, <code>failure_when</code>, <code>x-value-origin</code>) and light up the schema- and side-effect checks. Validated on real traces from smolagents, LangGraph, and CrewAI.</p>
       </div>
       <div class="install-line">
         <span class="cmd"><span class="pmt">$</span> pip install tracelint</span>
-        <span class="install-note">— or <code>"tracelint[langfuse]"</code> to also write findings back into Langfuse</span>
+        <span class="install-note">— or <code>"tracelint[capture-smolagents]"</code> to capture a run in a test (also <code>capture-langchain</code>, <code>capture-crewai</code>)</span>
       </div>
+
+      <div class="tp-grid" style="margin:22px 0 6px">
+        <div>
+          <p class="tp-h">1 · Capture a run</p>
+          <p class="tp-sub">No trace file yet? <code>capture</code> records one by wrapping your framework's own OpenInference instrumentation — your live tracing stays untouched.</p>
+          <div class="codecard">
+            <div class="cc-bar">test_agent.py</div>
+            <pre><span class="k">from</span> tracelint.capture <span class="k">import</span> capture
+
+<span class="k">with</span> capture(<span class="s">"trace.json"</span>, framework=<span class="s">"smolagents"</span>):
+    agent.run(<span class="s">"..."</span>)</pre>
+          </div>
+        </div>
+        <div>
+          <p class="tp-h">2 · Lint it, gate CI</p>
+          <p class="tp-sub">Lint the captured trace. A hard defect exits non-zero, so it fails the build like a failing test.</p>
+          <div class="tp-cmd"><span class="pmt">$</span> tracelint check trace.json --format openinference</div>
+          <p class="tp-note">In-process capture covers smolagents, LangGraph, and CrewAI. Langflow is a server — export its OTel trace to a file, then run the same <code>check</code>.</p>
+        </div>
+      </div>
+      <p class="tp-sub" style="margin:20px 0 10px;font-weight:600">Already have traces? Point tracelint at any source:</p>
       <div class="tabbar" role="tablist">
         <button class="tab active" data-tab="langfuse"><img src="assets/logos/langfuse.svg" alt="">Langfuse</button>
         <button class="tab" data-tab="phoenix"><img class="tl-light" src="assets/logos/arize.svg" alt=""><img class="tl-dark" src="assets/logos/arize-white.svg" alt="">Phoenix</button>
@@ -698,23 +719,10 @@
       </div>
 
       <div class="tabpanel active" data-panel="langfuse">
-        <div class="tp-grid">
-          <div>
-            <p class="tp-h">Langfuse</p>
-            <p class="tp-sub">Check the traces you already collect — and optionally write findings back as Scores, on the offending observation.</p>
-            <div class="tp-cmd"><span class="pmt">$</span> tracelint langfuse check --trace &lt;id&gt;</div>
-            <p class="tp-note">Run checks and print findings to your terminal.</p>
-            <div class="tp-cmd"><span class="pmt">$</span> tracelint langfuse check --trace &lt;id&gt; --write-back</div>
-            <p class="tp-note">Write findings back into Langfuse as Scores.</p>
-          </div>
-          <div class="scorecard">
-            <div class="sc-h">Observation <span class="chip def">hard_defect</span></div>
-            <div class="scrow"><span>trace_id</span><b>8a7c…d91e</b></div>
-            <div class="scrow"><span>tracelint.passed</span><b>false</b></div>
-            <div class="scrow"><span>tracelint.hard_defects</span><span class="num">1</span></div>
-            <p class="sc-note">Findings land as Scores on the exact offending observation, beside your evals.</p>
-          </div>
-        </div>
+        <p class="tp-h">Langfuse</p>
+        <p class="tp-sub">Pull a specific trace to lint or reproduce it — or export any trace to a file and check it.</p>
+        <div class="tp-cmd"><span class="pmt">$</span> tracelint langfuse pull &lt;id&gt; -o trace.json</div>
+        <p class="tp-note">Then <code>tracelint check trace.json</code>. Writing findings back into Langfuse as Scores stays available as an advanced, opt-in recipe.</p>
       </div>
       <div class="tabpanel" data-panel="phoenix">
         <p class="tp-h">Arize Phoenix</p>
@@ -791,7 +799,7 @@
   <span class="k">tracelint:</span>
     <span class="k">runs-on:</span> ubuntu-latest
     <span class="k">steps:</span>
-      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.7.0
+      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.8.0
         <span class="k">with:</span>
           <span class="k">path:</span> spans.json
           <span class="k">format:</span> openinference
@@ -799,7 +807,7 @@
           </div>
           <div class="codecard">
             <div class="cc-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg> CLI, anywhere</div>
-            <pre><span class="k">$</span> tracelint check spans.json --format langfuse --tools tools.json</pre>
+            <pre><span class="k">$</span> tracelint check trace.json --format openinference --tools tools.json</pre>
           </div>
         </div>
         <div class="exitcards">
