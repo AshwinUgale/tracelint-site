@@ -728,7 +728,7 @@
         <p class="tp-h">Arize Phoenix</p>
         <p class="tp-sub">Lint the OpenInference spans Phoenix already collects — no new instrumentation.</p>
         <div class="tp-cmd"><span class="pmt">$</span> tracelint check spans.json --format openinference</div>
-        <p class="tp-note">Reads <code>get_spans_dataframe()</code> records directly, too.</p>
+        <p class="tp-note">Reads <code>get_spans_dataframe()</code> records directly, too — and a whole-project export is split into one report per run.</p>
       </div>
       <div class="tabpanel" data-panel="otel">
         <p class="tp-h">OpenTelemetry</p>
@@ -799,9 +799,9 @@
   <span class="k">tracelint:</span>
     <span class="k">runs-on:</span> ubuntu-latest
     <span class="k">steps:</span>
-      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.8.0
+      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.9.0
         <span class="k">with:</span>
-          <span class="k">path:</span> spans.json
+          <span class="k">traces:</span> spans.json
           <span class="k">format:</span> openinference
           <span class="k">tools:</span> tools.json</pre>
           </div>
