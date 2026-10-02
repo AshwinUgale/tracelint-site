@@ -498,18 +498,18 @@
             <div class="rep-head"><span class="rtitle">Trace · support-agent</span><span class="rmeta">3 findings</span></div>
             <div class="rep-body">
               <div class="rsteps">
-                <div class="rstep"><span class="ri">0</span><span class="rk">user</span><span class="rc">refund order A100</span><span></span></div>
-                <div class="rstep hit def"><span class="ri">1</span><span class="rk">tool →</span><span class="rc"><code>get_order</code>(order_id='A100')</span><span class="rtag evt">R2a</span></div>
-                <div class="rstep hit def"><span class="ri">2</span><span class="rk">error</span><span class="rc err">{order_id:'A100', status:'error'}</span><span class="rtag def">R2b</span></div>
-                <div class="rstep hit def"><span class="ri">3</span><span class="rk">tool →</span><span class="rc"><code>refund_order</code>(order_id='A100')</span><span class="rtag def">R2b</span></div>
+                <div class="rstep"><span class="ri">0</span><span class="rk">user</span><span class="rc">Refund order A100 to the card on file.</span><span></span></div>
+                <div class="rstep"><span class="ri">1</span><span class="rk">tool →</span><span class="rc"><code>get_order</code>(order_id='A100')</span><span></span></div>
+                <div class="rstep hit evt"><span class="ri">2</span><span class="rk">error</span><span class="rc err">{order_id:'A100', status:'error', payment_method:'pm_7731'}</span><span class="rtag evt">R2a</span></div>
+                <div class="rstep hit def"><span class="ri">3</span><span class="rk">tool →</span><span class="rc"><code>refund_order</code>(order_id='A100', payment_method='pm_7731')</span><span class="rtag def">R2b</span></div>
                 <div class="rstep"><span class="ri">4</span><span class="rk">result</span><span class="rc good">{refunded: true}</span><span></span></div>
-                <div class="rstep hit evt"><span class="ri">5</span><span class="rk">tool →</span><span class="rc"><code>refund_order</code>(order_id='A100')</span><span class="rtag evt">R8</span></div>
+                <div class="rstep hit evt"><span class="ri">5</span><span class="rk">tool →</span><span class="rc"><code>refund_order</code>(order_id='A100', payment_method='pm_7731')</span><span class="rtag evt">R8</span></div>
                 <div class="rstep"><span class="ri">6</span><span class="rk">result</span><span class="rc good">{refunded: true}</span><span></span></div>
                 <div class="rstep"><span class="ri">7</span><span class="rk">assistant</span><span class="rc">Your refund is processed.</span><span></span></div>
               </div>
               <div class="rfinds">
-                <div class="rf evt"><div class="rf-h"><span class="chip evt">hard_event</span><span class="rid">R2a · step 1</span></div><p class="rf-s"><code>get_order</code> returned an error (HTTP 500), read straight off the span.</p><div class="rf-e">tool=get_order · signal=structured</div></div>
-                <div class="rf def"><div class="rf-h"><span class="chip def">hard_defect</span><span class="rid">R2b · steps 1 → 3</span></div><p class="rf-s">The errored value <b>A100</b> was reused as an argument to the side-effecting <code>refund_order</code> — no fallback.</p><div class="rf-e"><b>fails CI</b></div></div>
+                <div class="rf evt"><div class="rf-h"><span class="chip evt">hard_event</span><span class="rid">R2a · step 2</span></div><p class="rf-s"><code>get_order</code> returned an error (HTTP 500), read straight off the span.</p><div class="rf-e">tool=get_order · signal=structured</div></div>
+                <div class="rf def"><div class="rf-h"><span class="chip def">hard_defect</span><span class="rid">R2b · steps 2 → 3</span></div><p class="rf-s">The payment method <b>pm_7731</b> came only from the failed <code>get_order</code> response, and the side-effecting <code>refund_order</code> used it — no fallback.</p><div class="rf-e"><b>fails CI</b></div></div>
                 <div class="rf evt"><div class="rf-h"><span class="chip evt">hard_event</span><span class="rid">R8 · steps 3, 5</span></div><p class="rf-s"><code>refund_order</code> ran twice with identical args — the card was refunded twice.</p><div class="rf-e">tool=refund_order · reported</div></div>
               </div>
             </div>
@@ -584,7 +584,7 @@
           <div class="n">03 · ACT</div>
           <h3>Get a verdict you can act on</h3>
           <p>A CI exit code that fails the build on a hard defect, with every finding backed by its evidence — never a silent pass. Emit JSON or SARIF for code scanning, and read the coverage to see how much of the run was actually verified.</p>
-          <pre class="stepcode"><span class="pmt">$</span> tracelint check spans.json   →   fails CI</pre>
+          <pre class="stepcode"><span class="pmt">$</span> tracelint check spans.json --format openinference   →   fails CI</pre>
         </div>
       </div>
       <div class="princards">
@@ -651,8 +651,8 @@
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9 15.5H3l9-15.5z"/><path d="M12 10v4"/><path d="M12 17.4v.01"/></svg></span>
           <h3>Failed operation</h3>
-          <p>A tool returned a structured error — and, worse, its value got reused by a later side-effecting call instead of being handled.</p>
-          <div class="ru-ids"><span class="rtip" data-tip="Tool error event — a tool returned a structured error, or a declared failure_when fired on an HTTP 200.">R2a</span> · <span class="rtip" data-tip="Error mishandled — a value from a failed call is reused as an argument to a later side-effecting call.">R2b</span></div>
+          <p>A tool returned a structured error — and, worse, a value that only that failed result supplied gets used by a later side-effecting call instead of the error being handled.</p>
+          <div class="ru-ids"><span class="rtip" data-tip="Tool error event — a tool returned a structured error, or a declared failure_when fired on an HTTP 200.">R2a</span> · <span class="rtip" data-tip="Error mishandled — a value that only a failed result supplied is used by a later side-effecting call. Retrying the failed tool counts as handling it.">R2b</span></div>
         </div>
         <div class="rulecard">
           <span class="ru-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3 2.4c-.6.2-1 .8-1 1.6"/><path d="M12 16.5v.01"/></svg></span>
@@ -722,7 +722,7 @@
         <p class="tp-h">Langfuse</p>
         <p class="tp-sub">Pull a specific trace to lint or reproduce it — or export any trace to a file and check it.</p>
         <div class="tp-cmd"><span class="pmt">$</span> tracelint langfuse pull &lt;id&gt; -o trace.json</div>
-        <p class="tp-note">Then <code>tracelint check trace.json</code>. Writing findings back into Langfuse as Scores stays available as an advanced, opt-in recipe.</p>
+        <p class="tp-note">Then <code>tracelint check trace.json --format langfuse</code>. Writing findings back into Langfuse as Scores stays available as an advanced, opt-in recipe.</p>
       </div>
       <div class="tabpanel" data-panel="phoenix">
         <p class="tp-h">Arize Phoenix</p>
@@ -747,8 +747,8 @@
       </div>
       <div class="tabpanel" data-panel="custom">
         <p class="tp-h">Custom format</p>
-        <p class="tp-sub">Map any shape to the canonical <code>Trace</code> in a few lines — every rule applies.</p>
-        <div class="tp-cmd">from tracelint import lint_trace, default_rules</div>
+        <p class="tp-sub">Load any supported format with <code>load_source</code>, or map a custom shape to the canonical <code>Trace</code> — every rule applies.</p>
+        <div class="tp-cmd">from tracelint import load_source, lint_trace, default_rules</div>
       </div>
 
       <div class="toolcontract">
@@ -799,7 +799,7 @@
   <span class="k">tracelint:</span>
     <span class="k">runs-on:</span> ubuntu-latest
     <span class="k">steps:</span>
-      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.9.0
+      - <span class="k">uses:</span> AshwinUgale/tracelint@v0.10.0
         <span class="k">with:</span>
           <span class="k">traces:</span> spans.json
           <span class="k">format:</span> openinference
@@ -813,7 +813,7 @@
         <div class="exitcards">
           <div class="exitcard e0"><span class="ec-n">0</span><div><b>Clean</b><p>No hard defects — findings and coverage still reported.</p></div></div>
           <div class="exitcard e2"><span class="ec-n">2</span><div><b>Hard defect</b><p>A structurally-provable defect. The build fails.</p></div></div>
-          <div class="exitcard e3"><span class="ec-n">3</span><div><b>Input error</b><p>A bad trace or tools file — never a false pass.</p></div></div>
+          <div class="exitcard e3"><span class="ec-n">3</span><div><b>Input or usage error</b><p>A bad trace, tools file, or wrong flag — never a false pass.</p></div></div>
           <div class="exitcard sarif"><span class="ec-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10.5 12l-1.5 2 1.5 2M14 12l1.5 2-1.5 2"/></svg></span><div><b>SARIF output</b><p>Upload to GitHub, GitLab, or Azure DevOps code scanning for inline annotations.</p></div></div>
         </div>
       </div>
